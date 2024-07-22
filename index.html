@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Age Calculator by Programming Hero 123</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+            text-align:center;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+        input {
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+        .result div {
+            margin: 5px 0;
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+                max-width: 100%;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            input, button {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pro Age Calculator</h1>
+        <label for="birthdate">Enter your birthdate:</label>
+        <input type="date" id="birthdate">
+        <button onclick="calculateAge()">Calculate Age</button>
+        <button onclick="clearFields()">Clear</button>
+        <div class="result" id="result"></div>
+    </div>
+    
+    <script>
+        function calculateAge() {
+            const birthdateInput = document.getElementById('birthdate');
+            const resultDiv = document.getElementById('result');
+            const birthdate = new Date(birthdateInput.value);
+            const today = new Date();
+
+            if (isNaN(birthdate.getTime())) {
+                resultDiv.textContent = 'Please enter a valid birthdate.';
+                return;
+            }
+
+            // Calculate years, months, and days
+            let years = today.getFullYear() - birthdate.getFullYear();
+            let months = today.getMonth() - birthdate.getMonth();
+            let days = today.getDate() - birthdate.getDate();
+
+            if (days < 0) {
+                months--;
+                days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+            }
+
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            // Calculate total age in days
+            const ageInDays = Math.floor((today - birthdate) / (1000 * 60 * 60 * 24));
+
+            // Calculate age in weeks and days
+            const ageInWeeks = Math.floor(ageInDays / 7);
+            const remainingDays = ageInDays % 7;
+
+            // Calculate age in hours and minutes
+            const ageInHours = Math.floor(ageInDays * 24 + (today - birthdate) / (1000 * 60 * 60));
+            const ageInMinutes = Math.floor(ageInDays * 24 * 60 + (today - birthdate) / (1000 * 60));
+
+            // Calculate date of next birthday
+            const nextBirthday = new Date(today.getFullYear(), birthdate.getMonth(), birthdate.getDate());
+            if (nextBirthday < today) {
+                nextBirthday.setFullYear(today.getFullYear() + 1);
+            }
+            const daysUntilNextBirthday = Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
+
+            // Calculate decades and remaining years
+            const decades = Math.floor(years / 10);
+            const remainingYears = years % 10;
+
+            // Calculate zodiac sign
+            const zodiacSigns = [
+                { sign: "Capricorn", end: new Date(today.getFullYear(), 0, 19) },
+                { sign: "Aquarius", end: new Date(today.getFullYear(), 1, 18) },
+                { sign: "Pisces", end: new Date(today.getFullYear(), 2, 20) },
+                { sign: "Aries", end: new Date(today.getFullYear(), 3, 19) },
+                { sign: "Taurus", end: new Date(today.getFullYear(), 4, 20) },
+                { sign: "Gemini", end: new Date(today.getFullYear(), 5, 20) },
+                { sign: "Cancer", end: new Date(today.getFullYear(), 6, 22) },
+                { sign: "Leo", end: new Date(today.getFullYear(), 7, 22) },
+                { sign: "Virgo", end: new Date(today.getFullYear(), 8, 22) },
+                { sign: "Libra", end: new Date(today.getFullYear(), 9, 22) },
+                { sign: "Scorpio", end: new Date(today.getFullYear(), 10, 21) },
+                { sign: "Sagittarius", end: new Date(today.getFullYear(), 11, 21) }
+            ];
+
+            let zodiacSign = "";
+            for (const sign of zodiacSigns) {
+                if (birthdate <= sign.end) {
+                    zodiacSign = sign.sign;
+                    break;
+                }
+            }
+
+            // Calculate birthstone
+            const birthstones = [
+                "Garnet", // January
+                "Amethyst", // February
+                "Aquamarine", // March
+                "Diamond", // April
+                "Emerald", // May
+                "Pearl", // June
+                "Ruby", // July
+                "Peridot", // August
+                "Sapphire", // September
+                "Opal", // October
+                "Topaz", // November
+                "Turquoise" // December
+            ];
+
+            const birthstone = birthstones[birthdate.getMonth()];
+
+            // Determine age group
+            let ageGroup = "";
+            if (years < 13) {
+                ageGroup = "Child";
+            } else if (years < 20) {
+                ageGroup = "Teenager";
+            } else if (years < 65) {
+                ageGroup = "Adult";
+            } else {
+                ageGroup = "Senior";
+            }
+
+            resultDiv.innerHTML = `
+                <div>You are ${years} years, ${months} months, and ${days} days old.</div>
+              <br>
+                <div>Or ${ageInWeeks} weeks and ${remainingDays} days old.</div>
+              <br>
+                <div>Total age in days: ${ageInDays} days.</div>
+              <br>
+                <div>Total age in hours: ${ageInHours} hours.</div>
+              <br>
+                <div>Total age in minutes: ${ageInMinutes} minutes.</div>
+              <br>
+                <div>Date of your next birthday: ${nextBirthday.toDateString()}</div>
+              <br>
+                <div>Days until your next birthday: ${daysUntilNextBirthday} days.</div>
+              <br>
+                <div>Age in decades: ${decades} decades and ${remainingYears} years.</div>
+              <br>
+                <div>Your Zodiac sign is: ${zodiacSign}</div>
+              <br>
+                <div>Your birthstone is: ${birthstone}</div>
+              <br>
+                <div>Your age group is: ${ageGroup}</div>
+            `;
+        }
+
+        function clearFields() {
+            document.getElementById('birthdate').value = '';
+            document.getElementById('result').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
